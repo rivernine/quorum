@@ -69,3 +69,20 @@
 06:55:01.847991 version@stat F·[1 1] S·23KiB[238B 23KiB] Sc·[0.25 0.00]
 06:55:01.858829 db@janitor F·4 G·0
 06:55:01.858886 db@open done T·46.23571ms
+=============== Apr 27, 2020 (UTC) ===============
+01:51:48.445680 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+01:51:48.445861 version@stat F·[1 1] S·23KiB[238B 23KiB] Sc·[0.25 0.00]
+01:51:48.445871 db@open opening
+01:51:48.445915 journal@recovery F·1
+01:51:48.520217 journal@recovery recovering @17
+01:51:48.529374 memdb@flush created L0@19 N·211 S·15KiB "\x001:..\xffƳ,v391":"\xff-\xf3..XLo,v264"
+01:51:48.626435 version@stat F·[2 1] S·39KiB[15KiB 23KiB] Sc·[0.50 0.00]
+01:51:48.636244 db@janitor F·5 G·0
+01:51:48.636270 db@open done T·190.392536ms
+01:52:04.617406 table@compaction L0·2 -> L1·1 S·39KiB Q·429
+01:52:04.626957 table@build created L1@22 N·312 S·38KiB "\x001:..\xffƳ,v391":"\xff-\xf3..XLo,v264"
+01:52:04.626997 version@stat F·[0 1] S·38KiB[0B 38KiB] Sc·[0.00 0.00]
+01:52:04.630937 table@compaction committed F-2 S-828B Ke·0 D·63 T·13.502103ms
+01:52:04.631014 table@remove removed @19
+01:52:04.631043 table@remove removed @16
+01:52:04.631077 table@remove removed @15

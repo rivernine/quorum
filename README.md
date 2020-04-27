@@ -1,14 +1,14 @@
-# Quorum Network 
+# **Quorum Network** 
 
-## 목차
+## **목차**
   * [0. 개요](#%eb%aa%a9%ec%b0%a8)
   * [1. Create Quorum](#1-create-quorum)
   * [2. Deploy Contact](#2-deploy-contract)
   * [3. Run Contract in Web3](#3-run-contract-in-web3)
   * [기타](#%ea%b8%b0%ed%83%80)
-## 0. 개요
+## **0. 개요**
   * Quorum: Ethereum 기반의 Private Network
-## 1. Create Quorum
+## **1. Create Quorum**
 **[출처(사내 Wire)](!wire.lgcns.com/bitbucket/projects/BLOCKCHAIN/repos/eth-petshop/browse)**
 ### 1.1. Install & Setup
 ```bash
@@ -52,7 +52,7 @@ cd testnode
 ./start.sh
 ```
 
-## 2. Deploy Contract
+## **2. Deploy Contract**
 ### 2.1. Sample Contarct download
 ```bash
 # eth-petshop/contracts/Schema.sol 사용
@@ -87,7 +87,7 @@ git clone https://wire.lgcns.com/bitbucket/scm/blockchain/eth-petshop.git
    * [4-2]<br>
    <br>![4.2.png](./picture/4-2.PNG)<br><br>
 
-## 3. Run Contract in Web3
+## **3. Run Contract in Web3**
   * [참고] Remix에서도 Transaction을 발생시킬 수 있다.
 ### 3.1. web3 환경 구성
 ```bash
@@ -130,7 +130,7 @@ const contractInstance = new web3.eth.Contract(abi, address)
 node index.js
 ```
 
-## 기타
+## **기타**
 * [Deploy Contract to Quorum Network](!https://developers.sap.com/tutorials/blockchain-quorum-test-smartcontract.html)
 * [Remix](!http://remix.ethereum.org/)
 * [Web3 doc](!https://web3js.readthedocs.io/)
