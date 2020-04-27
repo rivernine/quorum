@@ -1,74 +1,139 @@
-# Quorum Maker V2.6.2
+# Quorum Network 
 
-Synechron's Quorum Maker is a tool that allows users to create and manage Quorum network. Manually editing configuration files and creating nodes is a slow and error-prone process. Quorum Maker can create any number of nodes of various configurations dynamically with reduced user input. This provides a wizard-like interface with a series of questions to guide the user when creating nodes. Quorum Maker can create nodes to:
+## 목차
+  * [0. 개요](#%eb%aa%a9%ec%b0%a8)
+  * [1. Create Quorum](#1-create-quorum)
+  * [2. Deploy Contact](#2-deploy-contract)
+  * [3. Run Contract in Web3](#3-run-contract-in-web3)
+  * [기타](#%ea%b8%b0%ed%83%80)
+## 0. 개요
+  * Quorum: Ethereum 기반의 Private Network
+## 1. Create Quorum
+**[출처(사내 Wire)](!wire.lgcns.com/bitbucket/projects/BLOCKCHAIN/repos/eth-petshop/browse)**
+### 1.1. Install & Setup
+```bash
+git clone https://github.com/synechron-finlabs/quorum-maker.git
+cd quorum-make
+./setup.sh
 
-- run with docker-compose (Raft consensus/Quorum 2.2.0) for easy use in development environments; or,
-- nodes to be distributed on separate Linux boxes or cloud instances for a production environment (Raft consensus/Quorum 2.2.0)
+# 1. Create Network 선택
+# Enter node name
+# Enter IP Address
+# RPC Port(default:22000)
+# Network Listening Port(default:22001)
+# Constellation Port(default:22002)
+# Raft Port(default:22003)
+# Node Manager Port(default:22004)
+# WS Port(default:22005)
+#
+# http://IP Address:22004/ 확인
+```
+### 1.2. Customizing
 
-![Quorum Maker 2](img/QM2.png)
+  * 새로운 터미널을 열어 네트워크를 내린 후 수정
+```bash
+docker ps | grep start_testnode.sh | awk '{print $1}' | xargs -t docker stop
+```
 
-## Quorum Maker provides the following benefits:
+```bash
+# testnode/node/start_testnode.sh 수정
+#
+# --unlock 0 --password <(echo -n "")> 추가
+# 모든 address에게 contract deploy 권한을 주는 옵션
+PRIVATE_CONFIG=qdata/$NODE_NAME.ipc geth --verbosity 6 --datadir qdata $GLOBAL_ARGS --rpccorsdomain "*" --raftport $RA_PORT --rpcport $R_PORT --port $W_PORT --ws --wsaddr 0.0.0.0 --wsport $WS_PORT --wsorigins '*' --wsapi $ENABLED_API --nat extip:$CURRENT_NODE_IP 2>>qdata/gethLogs/${NODE_NAME}.log &
 
-- An easy interface to create and manage the Quorum Network
-- A modern UI to monitor and manage Quorum Network
-- A Network Map Service to be used for identifying nodes and self-publishing roles.  
-- Block and Transaction Explorer
-- Smart Contract Deployment
-- Email Notifications
+==>
 
-## Quickstart
+PRIVATE_CONFIG=qdata/$NODE_NAME.ipc geth --unlock 0 --password <(echo -n "")> --verbosity 6 --datadir qdata $GLOBAL_ARGS --rpccorsdomain "*" --raftport $RA_PORT --rpcport $R_PORT --port $W_PORT --ws --wsaddr 0.0.0.0 --wsport $WS_PORT --wsorigins '*' --wsapi $ENABLED_API --nat extip:$CURRENT_NODE_IP 2>>qdata/gethLogs/${NODE_NAME}.log &
+```
+  * 재기동
+```bash
+cd testnode
+./start.sh
+```
 
-Please refer to [Quorum Maker Wiki](https://github.com/synechron-finlabs/quorum-maker/wiki) for complete reference on using Quorum Maker. 
+## 2. Deploy Contract
+### 2.1. Sample Contarct download
+```bash
+# eth-petshop/contracts/Schema.sol 사용
+git clone https://wire.lgcns.com/bitbucket/scm/blockchain/eth-petshop.git
+```
+### 2.2. Deploy on Remix
+  1. remix.ethereum.org 접속
+   
+  2. Environments에서 Solidity 선택
+    ![1.png](./1.PNG)
 
-> For quick help, run `./setup.sh --help` 
+  3. Add Schema.sol
+    ![2.png](./2.PNG)
 
-## Change Log
+  4. Compile Schema.sol
+    ![3.png](./3.PNG)
+    
+    1. 버전에 맞는 컴파일러 선택
+       *.sol의 최상단 참조
+    2. Compile Schema.sol
+    3. ABI Copy(Clipboard) (차후 활용 1)
+  5. Deploy & Run
+    ![4.png](./4.PNG)
 
-Change log V2.6.2
-1. Upgraded to Tessera 0.8
-1. Upgraded to Quorum 2.2.1
-1. Fixed bug on private transaction with Constellation
-1. Fixed issue #87 (https://github.com/synechron-finlabs/quorum-maker/issues/87) Block structure not preserved 
+    1. Web3 Provider 선택
+    2. "1.1."를 통해 구축한 정보를 입력 (RPC default port: 22000)
+    3. OK (성공화면: [4-1])
+    4. Deploy (성공화면: [4-2])
+    5. [4-2]에 표시한 버튼을 눌러 Contract Address 획득 (차후 활용 2)
+   * [4-1]<br>
+   ![4.1.png](./4-1.PNG)
+   * [4-2]<br>
+   ![4.2.png](./4-2.PNG)
 
-Change log V2.6.1
-1. Added flag to expose ports automatically in Dev/Test Network setup
-1. Added flag to create nodes in Tessera by default
-1. Fix typo on Enabled API (nethh => net,shh)
+## 3. Run Contract in Web3
+  * [참고] Remix에서도 Transaction을 발생시킬 수 있다.
+### 3.1. web3 환경 구성
+```bash
+mkdir web3test
+cd web3test
+npm init
+# Enter로 기본값 설정
+sudo npm install web3
+vim index.js
+```
+```js
+const Web3 = require("web3")
+const web3 = new Web3("http://192.168.56.2:22000")
+// Schema.sol's ABI
+const abi = [...]
+// Deployed Contract Address
+const address = "0x590c9404D974a845eb71372c84B60106e0DBe5F3"
+const contractInstance = new web3.eth.Contract(abi, address)
 
-Change log V2.6
-1. Added Tessera support for Dev/Test network creation
-1. Added Tessera support for multi-machine setup
-1. Fixed port issue with constellation configuration
+///////////////////////////////////////////////////////
+//
+//                   CURD Example
+//     
+//     Create (Create는 Gas 필요)
+//     solidity의 address type을 준수해야 함
+//
+// contractInstance.methods.set("0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC", "Hello World", "0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC", "Hello Title").send({from: "0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC", gas: 800000}, function(error, transactionHash){ console.log(error) })
+//
+//     Read
+//
+// contractInstance.methods.get('0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC').call({from: '0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC'}, function(error, result){console.log(result)})
+//
+//     Delete
+// contractInstance.methods.remove("0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC").send({from: "0x4a5F7AC37f6E4f6bA81d2Cda4eE00f5d47A0C3fC", gas: 800000}, function(error, transactionHash){ console.log(error) })
+//
+////////////////////////////////////////////////////////
+```
+```bash
+# 실행
+node index.js
+```
 
-Change log V2.5.2
-1. Quorum version changed to V2.2.0
-1. Added detach mode for non-interactive setup
-1. Print Project details in table for Dev/Test network
-1. Fix for WS support
-1. QM banner and version information on startup
-
-Change log V2.5.1
-1. Quorum version changed to V2.1.1 
-
-Change log V2.5
-1. Quorum version changed to V2.1.0 
-
-Change log V2.4
-1. Added command line flags for running Quorum Maker non-interactively 
-2. Whitelist feature added for automatically accepting join requests from whitelisted IPs 
-3. Account explorer with account creation feature added 
-4. Attach mode restart notification added to UI 
-5. Attach mode contract updation based on enode instead of nodename from setup.conf 
-6. Logging added for incoming join requests 
-7. Redundant node name updation steps removed
-
-
-Change log V2.3
-1. Attaching nodes to exisisting Quorum node is fully supported.
-2. Attached node can approve Join Requests. E.g. Fully migrate 7node example to Quorum Maker and add additional nodes. 
-3. Quorum Maker can deploy Smart Contracts using inheritance.
-4. Auto attach ABI of smart contracts deployed using Truffle and Quorum Maker Smart Contract Deployer. 
-5. All solidity data types are supported on the transaction parameter view. 
-6. Enabled WS Ports for Web3 push service. 
-7. Additional template for sending test mail on email service registration
-8. Added -d flag for start.sh of nodes to run in daemon mode. 
+## 기타
+* [Deploy Contract to Quorum Network](!https://developers.sap.com/tutorials/blockchain-quorum-test-smartcontract.html)
+* [Remix](!http://remix.ethereum.org/)
+* [Web3 doc](!https://web3js.readthedocs.io/)
+* [Quorum official](!https://docs.goquorum.com/)
+---
+**<center>2020-04-00 강재구</center>**
